@@ -9,10 +9,23 @@ interface SettingsModalProps {
   recurringExpenses: RecurringExpense[];
   onSaveRecurring: (expenses: RecurringExpense[]) => void;
   onBackup: () => void;
-  onRestore: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onTriggerRestore: () => void;
+  profiles: string[];
+  activeProfile: string | null;
+  onDeleteProfile: (profileName: string) => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, recurringExpenses, onSaveRecurring, onBackup, onRestore }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ 
+    isOpen, 
+    onClose, 
+    recurringExpenses, 
+    onSaveRecurring, 
+    onBackup, 
+    onTriggerRestore,
+    profiles,
+    activeProfile,
+    onDeleteProfile 
+}) => {
   const [localExpenses, setLocalExpenses] = useState<RecurringExpense[]>([]);
   
   // State for new expense form
@@ -21,9 +34,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, recurrin
   const [recurrenceValue, setRecurrenceValue] = useState(1);
   const [recurrenceType, setRecurrenceType] = useState<'days' | 'weeks' | 'months'>('months');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const restoreInputRef = useRef<HTMLInputElement>(null);
-
 
   useEffect(() => {
     if (isOpen) {
@@ -124,13 +134,34 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, recurrin
                 </div>
             </div>
 
+            {/* Manage Profiles Section */}
+            <div>
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">Manage Profiles</h3>
+                <div className="space-y-2">
+                    {profiles.map(profile => (
+                        <div key={profile} className="flex items-center justify-between bg-gray-800 p-2 pl-4 rounded-lg">
+                            <p className={profile === activeProfile ? "font-bold text-white" : "text-gray-300"}>
+                                {profile} {profile === activeProfile && <span className="text-xs text-blue-400">(Active)</span>}
+                            </p>
+                            <button 
+                                onClick={() => onDeleteProfile(profile)} 
+                                className="p-2 text-red-500 hover:text-red-400 transition-colors"
+                                title={`Delete ${profile}`}
+                                aria-label={`Delete profile ${profile}`}
+                            >
+                                <TrashIcon className="w-5 h-5"/>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Data Management Section */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-300 mb-2">Data Management</h3>
                 <div className="flex space-x-3">
                     <button onClick={onBackup} className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-full py-2 px-4 transition-colors">Backup Data</button>
-                    <button onClick={() => restoreInputRef.current?.click()} className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-full py-2 px-4 transition-colors">Restore Data</button>
-                    <input type="file" accept=".json" ref={restoreInputRef} onChange={onRestore} className="hidden" />
+                    <button onClick={onTriggerRestore} className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-full py-2 px-4 transition-colors">Restore Data</button>
                 </div>
             </div>
         </div>
@@ -145,3 +176,4 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, recurrin
 };
 
 export default SettingsModal;
+
