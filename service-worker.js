@@ -15,6 +15,7 @@ const urlsToCache = [
   '/components/ProfileModal.tsx',
   '/components/SettingsModal.tsx',
   '/components/SummaryModal.tsx',
+  '/components/ConfirmationModal.tsx',
   'https://cdn.tailwindcss.com'
 ];
 
