@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PlusIcon, MinusIcon } from './icons';
 import { Currency } from '../types';
@@ -53,9 +52,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
                   className="bg-transparent text-white rounded-r-full pr-3 py-3 focus:outline-none"
                   disabled={disabled}
               >
-                  <option value="USD" className="bg-gray-900">$ USD</option>
-                  <option value="EUR" className="bg-gray-900">€ EUR</option>
-                  <option value="GBP" className="bg-gray-900">£ GBP</option>
+                  <option value="USD" className="bg-gray-900">$</option>
+                  <option value="EUR" className="bg-gray-900">€</option>
+                  <option value="GBP" className="bg-gray-900">£</option>
               </select>
           </div>
         </div>
@@ -87,3 +86,4 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
 };
 
 export default TransactionForm;
+
