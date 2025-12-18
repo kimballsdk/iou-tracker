@@ -79,7 +79,7 @@ const App: React.FC = () => {
                     id: `${nextDueDate.toISOString()}-recurring-${expense.id}`,
                     text: `${expense.text} (Recurring)`,
                     amount: expense.amount * CONVERSION_RATES[expense.currency],
-                    type: 'add',
+                    type: expense.type || 'add',
                     date: nextDueDate.toISOString(),
                     currency: expense.currency,
                     originalAmount: expense.amount,
