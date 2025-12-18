@@ -10,6 +10,7 @@ import { UserPlusIcon } from './components/icons';
 import ProfileModal from './components/ProfileModal';
 import SettingsModal from './components/SettingsModal';
 import SummaryModal from './components/SummaryModal';
+import ConfirmationModal from './components/ConfirmationModal';
 
 // Static conversion rates for simplicity
 export const CONVERSION_RATES: Record<Currency, number> = {
@@ -28,6 +29,8 @@ const App: React.FC = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     // New logic for flexible recurring expenses
@@ -176,6 +179,37 @@ const App: React.FC = () => {
       setAllRecurringExpenses(prev => ({...prev, [activeProfile]: expenses }));
   };
 
+  const requestDeleteProfile = (profileName: string) => {
+    setProfileToDelete(profileName);
+    setIsConfirmModalOpen(true);
+  };
+  
+  const handleDeleteProfile = () => {
+    if (!profileToDelete) return;
+
+    // Update profiles list
+    const newProfiles = profiles.filter(p => p !== profileToDelete);
+    setProfiles(newProfiles);
+
+    // Update transactions
+    const newAllTransactions = { ...allTransactions };
+    delete newAllTransactions[profileToDelete];
+    setAllTransactions(newAllTransactions);
+
+    // Update recurring expenses
+    const newAllRecurringExpenses = { ...allRecurringExpenses };
+    delete newAllRecurringExpenses[profileToDelete];
+    setAllRecurringExpenses(newAllRecurringExpenses);
+    
+    // If the deleted profile was active, switch to another or clear
+    if (activeProfile === profileToDelete) {
+      setActiveProfile(newProfiles.length > 0 ? newProfiles[0] : null);
+    }
+    
+    setIsConfirmModalOpen(false);
+    setProfileToDelete(null);
+  };
+
   const handleBackup = () => {
       const data = {
           profiles,
@@ -282,14 +316,31 @@ const App: React.FC = () => {
           onSaveRecurring={handleSaveRecurringExpenses}
           onBackup={handleBackup}
           onRestore={handleRestore}
+          profiles={profiles}
+          activeProfile={activeProfile}
+          onDeleteProfile={requestDeleteProfile}
         />
         <SummaryModal
             isOpen={isSummaryModalOpen}
             onClose={() => setIsSummaryModalOpen(false)}
             allTransactions={allTransactions}
         />
+        <ConfirmationModal
+            isOpen={isConfirmModalOpen}
+            onClose={() => setIsConfirmModalOpen(false)}
+            onConfirm={handleDeleteProfile}
+            title="Delete Profile"
+            message={
+                <>
+                    Are you sure you want to delete the profile "<strong>{profileToDelete}</strong>"? 
+                    This will permanently remove all associated transactions and recurring expenses. 
+                    This action cannot be undone.
+                </>
+            }
+        />
     </div>
   );
 };
 
 export default App;
+
