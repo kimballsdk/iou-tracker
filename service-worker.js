@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'iou-tracker-cache-v2';
+const CACHE_NAME = 'iou-tracker-cache-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -50,6 +50,7 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
