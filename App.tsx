@@ -16,7 +16,7 @@ import ConfirmationModal from './components/ConfirmationModal';
 export const CONVERSION_RATES: Record<Currency, number> = {
   USD: 1,
   EUR: 1.08, // 1 EUR = 1.08 USD
-  JPY: 0.0064, // 1 JPY = 0.0064 USD
+  GBP: 1.25, // 1 GBP = 1.25 USD
 };
 
 const App: React.FC = () => {
