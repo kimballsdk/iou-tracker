@@ -55,7 +55,10 @@ const HistoryList: React.FC<HistoryListProps> = ({ transactions, onTransactionCl
                 }
               <div>
                 <p className="font-medium text-gray-200">{tx.text}</p>
-                <p className="text-xs text-gray-500">{formatDate(tx.date)}</p>
+                <p className="text-xs text-gray-500">
+                    {formatDate(tx.date)}
+                    {tx.restored && <span className="text-blue-400 ml-1">(restored)</span>}
+                </p>
               </div>
             </div>
             <p className={`font-semibold text-right ${tx.type === 'add' ? 'text-red-400' : 'text-green-400'}`}>
