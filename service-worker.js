@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'iou-tracker-cache-v8';
+const CACHE_NAME = 'iou-tracker-cache-v9';
 const urlsToCache = [
   '/iou-tracker/',
   '/iou-tracker/index.html',
