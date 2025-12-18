@@ -37,26 +37,24 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
             className="flex-1 bg-transparent text-white placeholder-gray-500 rounded-l-full py-3 px-4 focus:outline-none"
             disabled={disabled}
           />
-          <div className="flex items-center pr-2">
-              <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0.00"
-                  className="w-24 bg-transparent text-white text-right placeholder-gray-500 py-3 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  disabled={disabled}
-              />
-               <select 
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value as Currency)}
-                  className="bg-transparent text-white rounded-r-full pr-3 py-3 focus:outline-none"
-                  disabled={disabled}
-              >
-                  <option value="USD" className="bg-gray-900">$</option>
-                  <option value="EUR" className="bg-gray-900">€</option>
-                  <option value="GBP" className="bg-gray-900">£</option>
-              </select>
-          </div>
+          <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-24 bg-transparent text-white text-right placeholder-gray-500 py-3 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              disabled={disabled}
+          />
+           <select 
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              className="bg-transparent text-white rounded-r-full py-3 pl-1 pr-4 focus:outline-none"
+              disabled={disabled}
+          >
+              <option value="USD" className="bg-gray-900">$</option>
+              <option value="EUR" className="bg-gray-900">€</option>
+              <option value="GBP" className="bg-gray-900">£</option>
+          </select>
         </div>
 
         {/* Action Buttons */}
@@ -86,4 +84,3 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
 };
 
 export default TransactionForm;
-
