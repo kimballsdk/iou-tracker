@@ -1,5 +1,5 @@
 {
   "name": "IOU Tracker",
-  "description": "A simple money tracker to keep a log of how much you owe someone. It uses AI to parse transaction amounts from natural language.",
+  "description": "A simple money tracker to keep a log of how much you owe someone.",
   "requestFramePermissions": []
 }
