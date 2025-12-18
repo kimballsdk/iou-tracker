@@ -5,9 +5,10 @@ import { PlusCircleIcon, MinusCircleIcon } from './icons';
 
 interface HistoryListProps {
   transactions: Transaction[];
+  onTransactionClick: (transaction: Transaction) => void;
 }
 
-const HistoryList: React.FC<HistoryListProps> = ({ transactions }) => {
+const HistoryList: React.FC<HistoryListProps> = ({ transactions, onTransactionClick }) => {
     const formatCurrency = (amount: number, currency: string) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -44,7 +45,8 @@ const HistoryList: React.FC<HistoryListProps> = ({ transactions }) => {
         {transactions.map((tx) => (
           <li
             key={tx.id}
-            className="flex items-center justify-between bg-gray-900 p-3 rounded-lg"
+            className="flex items-center justify-between bg-gray-900 p-3 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors"
+            onClick={() => onTransactionClick(tx)}
           >
             <div className="flex items-center space-x-3">
                 {tx.type === 'add' ? 
