@@ -34,7 +34,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={disabled ? 'Select a profile to begin' : 'Description'}
-            className="flex-1 bg-transparent text-white placeholder-gray-500 rounded-l-full py-3 px-4 focus:outline-none"
+            className="flex-1 bg-transparent text-white placeholder-gray-500 rounded-l-full py-3 px-4 focus:outline-none min-w-0"
             disabled={disabled}
           />
           <input
@@ -42,13 +42,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-24 bg-transparent text-white text-right placeholder-gray-500 py-3 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-20 flex-shrink-0 bg-transparent text-white text-right placeholder-gray-500 py-3 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               disabled={disabled}
           />
            <select 
               value={currency}
               onChange={(e) => setCurrency(e.target.value as Currency)}
-              className="bg-transparent text-white rounded-r-full py-3 pl-1 pr-4 focus:outline-none"
+              className="flex-shrink-0 bg-transparent text-white rounded-r-full py-3 pl-1 pr-4 focus:outline-none"
               disabled={disabled}
           >
               <option value="USD" className="bg-gray-900">$</option>
