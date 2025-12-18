@@ -6,7 +6,7 @@ import Header from './components/Header';
 import BalanceDisplay from './components/BalanceDisplay';
 import HistoryList from './components/HistoryList';
 import TransactionForm from './components/TransactionForm';
-import { UserPlusIcon, CheckCircleIcon } from './components/icons';
+import { UserPlusIcon, CheckCircleIcon, ExclamationTriangleIcon, ArrowUturnLeftIcon } from './components/icons';
 import ProfileModal from './components/ProfileModal';
 import SettingsModal from './components/SettingsModal';
 import SummaryModal from './components/SummaryModal';
@@ -34,6 +34,8 @@ const App: React.FC = () => {
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [isDeleteTxConfirmOpen, setIsDeleteTxConfirmOpen] = useState(false);
+  const [transactionToRestore, setTransactionToRestore] = useState<Transaction | null>(null);
+  const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
   const [showUpdateToast, setShowUpdateToast] = useState(false);
   const restoreInputRef = useRef<HTMLInputElement>(null);
 
@@ -279,11 +281,19 @@ const App: React.FC = () => {
     setTransactionToDelete(null);
   };
   
-  const handleRestoreTransaction = (txToRestore: Transaction) => {
-    if (!activeProfile) return;
+  const requestRestoreTransaction = (tx: Transaction) => {
+    setTransactionToRestore(tx);
+    setIsRestoreConfirmOpen(true);
+  };
 
-    const restoredTransactions = [...(allTransactions[activeProfile] || []), txToRestore]
+  const handleRestoreTransaction = () => {
+    if (!transactionToRestore || !activeProfile) return;
+
+    const restoredTx = { ...transactionToRestore, restored: true };
+
+    const restoredTransactions = [...(allTransactions[activeProfile] || []), restoredTx]
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
     setAllTransactions(prev => ({
         ...prev,
         [activeProfile]: restoredTransactions
@@ -291,8 +301,11 @@ const App: React.FC = () => {
 
     setDeletedTransactions(prev => ({
         ...prev,
-        [activeProfile]: (prev[activeProfile] || []).filter(tx => tx.id !== txToRestore.id)
+        [activeProfile]: (prev[activeProfile] || []).filter(tx => tx.id !== transactionToRestore.id)
     }));
+    
+    setIsRestoreConfirmOpen(false);
+    setTransactionToRestore(null);
   };
 
   const handleBackup = () => {
@@ -424,7 +437,7 @@ const App: React.FC = () => {
           onDeleteProfile={requestDeleteProfile}
           onRenameProfile={handleRenameProfile}
           deletedTransactions={currentDeletedTransactions}
-          onRestoreTransaction={handleRestoreTransaction}
+          onRequestRestoreTransaction={requestRestoreTransaction}
         />
         <SummaryModal
             isOpen={isSummaryModalOpen}
@@ -443,6 +456,10 @@ const App: React.FC = () => {
                     This action cannot be undone.
                 </>
             }
+            confirmText="Delete"
+            confirmButtonClass="inline-flex w-full justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+            icon={<ExclamationTriangleIcon className="h-6 w-6 text-red-400" aria-hidden="true" />}
+            iconContainerClass='bg-red-900/50'
         />
         <ConfirmationModal
             isOpen={isDeleteTxConfirmOpen}
@@ -450,6 +467,21 @@ const App: React.FC = () => {
             onConfirm={handleDeleteTransaction}
             title="Delete Transaction"
             message="Are you sure you want to delete this transaction? This can be undone in Settings."
+            confirmText="Delete"
+            confirmButtonClass="inline-flex w-full justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+            icon={<ExclamationTriangleIcon className="h-6 w-6 text-red-400" aria-hidden="true" />}
+            iconContainerClass='bg-red-900/50'
+        />
+        <ConfirmationModal
+            isOpen={isRestoreConfirmOpen}
+            onClose={() => setIsRestoreConfirmOpen(false)}
+            onConfirm={handleRestoreTransaction}
+            title="Restore Transaction"
+            message="Are you sure you want to restore this transaction to the history?"
+            confirmText="Restore"
+            confirmButtonClass="inline-flex w-full justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto"
+            icon={<ArrowUturnLeftIcon className="h-6 w-6 text-blue-400" aria-hidden="true" />}
+            iconContainerClass='bg-blue-900/50'
         />
         {/* Recurring Expenses Update Toast */}
         <div 
