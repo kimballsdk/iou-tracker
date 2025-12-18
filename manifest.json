@@ -15,7 +15,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/iou-tracker/",
+  "scope": "/iou-tracker/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#000000"
