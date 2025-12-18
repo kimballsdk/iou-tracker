@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { XMarkIcon, TrashIcon, PlusIcon, PencilIcon, ArrowUturnLeftIcon } from './icons';
+import { XMarkIcon, TrashIcon, PlusIcon, PencilIcon, ArrowUturnLeftIcon, PlusCircleIcon, MinusCircleIcon } from './icons';
 import { RecurringExpense, Currency, Transaction } from '../types';
 
 interface SettingsModalProps {
@@ -60,11 +60,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   
   const handleAddExpense = () => {
       const amount = parseFloat(newExpenseAmount);
-      if (newExpenseText.trim() && amount > 0 && recurrenceValue > 0) {
+      if (newExpenseText.trim() && amount !== 0 && recurrenceValue > 0) {
           const newExpense: RecurringExpense = {
               id: `${Date.now()}`,
               text: newExpenseText.trim(),
-              amount,
+              amount: Math.abs(amount),
+              type: amount > 0 ? 'add' : 'subtract',
               currency: 'USD',
               recurrenceType,
               recurrenceValue,
@@ -127,22 +128,31 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div>
                 <h3 className="text-lg font-semibold text-gray-300 mb-2">Recurring IOUs</h3>
                 <div className="space-y-2 mb-3">
-                    {localExpenses.map(exp => (
-                        <div key={exp.id} className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">
-                            <div>
-                                <p>{exp.text} - {formatCurrency(exp.amount, exp.currency)}</p>
-                                <p className="text-xs text-gray-400">{formatRecurrenceRule(exp)}</p>
+                    {localExpenses.map(exp => {
+                        const type = exp.type || 'add';
+                        return (
+                            <div key={exp.id} className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">
+                                <div className="flex items-center space-x-3 overflow-hidden">
+                                    {type === 'add' ?
+                                        <PlusCircleIcon className="w-5 h-5 text-red-400 flex-shrink-0" /> :
+                                        <MinusCircleIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                                    }
+                                    <div className="overflow-hidden">
+                                        <p className="text-gray-200 truncate">{exp.text} - {formatCurrency(exp.amount, exp.currency)}</p>
+                                        <p className="text-xs text-gray-400">{formatRecurrenceRule(exp)}</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => handleRemoveExpense(exp.id)} className="text-red-400 hover:text-red-300 ml-2 flex-shrink-0"><TrashIcon className="w-5 h-5"/></button>
                             </div>
-                            <button onClick={() => handleRemoveExpense(exp.id)} className="text-red-400 hover:text-red-300"><TrashIcon className="w-5 h-5"/></button>
-                        </div>
-                    ))}
+                        );
+                    })}
                     {localExpenses.length === 0 && <p className="text-sm text-gray-500">No recurring expenses.</p>}
                 </div>
                 
                 <div className="space-y-2 p-3 border border-gray-700 rounded-lg">
                     <h4 className="font-semibold text-gray-200">Add New Recurring Expense</h4>
                     <input type="text" placeholder="Description" value={newExpenseText} onChange={e => setNewExpenseText(e.target.value)} className="w-full bg-gray-700 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    <input type="number" placeholder="Amount (USD)" value={newExpenseAmount} onChange={e => setNewExpenseAmount(e.target.value)} className="w-full bg-gray-700 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input type="number" placeholder="Amount (USD, use - for payments)" value={newExpenseAmount} onChange={e => setNewExpenseAmount(e.target.value)} className="w-full bg-gray-700 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     <div className="grid grid-cols-2 gap-2">
                         <div>
                             <label className="text-xs text-gray-400 block mb-1">Recurs Every</label>
