@@ -278,7 +278,7 @@ const App: React.FC = () => {
   if (profiles.length === 0) {
     return (
        <>
-        <div className="bg-black text-white h-screen w-screen flex flex-col justify-center items-center text-center p-4">
+        <div className="bg-black text-white h-full w-full flex flex-col justify-center items-center text-center p-4">
             <h1 className="text-3xl font-bold mb-2">Welcome to IOU Tracker</h1>
             <p className="text-gray-400 mb-6">Create a profile to start tracking what you owe.</p>
             <button 
@@ -309,7 +309,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="bg-black text-white h-screen w-screen flex flex-col font-sans">
+    <div className="bg-black text-white h-full w-full flex flex-col font-sans">
       <div className="max-w-md w-full mx-auto flex flex-col h-full">
         <Header 
           profiles={profiles}
@@ -383,4 +383,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
