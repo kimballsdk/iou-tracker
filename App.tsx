@@ -24,6 +24,7 @@ const App: React.FC = () => {
   const [activeProfile, setActiveProfile] = useLocalStorage<string | null>('activeProfile', null);
   const [allTransactions, setAllTransactions] = useLocalStorage<Record<string, Transaction[]>>('allTransactions', {});
   const [allRecurringExpenses, setAllRecurringExpenses] = useLocalStorage<Record<string, RecurringExpense[]>>('allRecurringExpenses', {});
+  const [deletedTransactions, setDeletedTransactions] = useLocalStorage<Record<string, Transaction[]>>('deletedTransactions', {});
   
   const [error, setError] = useState<string | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -31,6 +32,8 @@ const App: React.FC = () => {
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [isDeleteTxConfirmOpen, setIsDeleteTxConfirmOpen] = useState(false);
   const [showUpdateToast, setShowUpdateToast] = useState(false);
   const restoreInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,6 +132,11 @@ const App: React.FC = () => {
     if (!activeProfile) return [];
     return allRecurringExpenses[activeProfile] || [];
   }, [allRecurringExpenses, activeProfile]);
+  
+  const currentDeletedTransactions = useMemo(() => {
+    if (!activeProfile) return [];
+    return deletedTransactions[activeProfile] || [];
+  }, [deletedTransactions, activeProfile]);
 
   const totalOwed = useMemo(() => {
     return currentTransactions.reduce((acc, curr) => {
@@ -157,6 +165,34 @@ const App: React.FC = () => {
         setAllRecurringExpenses(prev => ({ ...prev, [trimmedName]: [] }));
       }
       setIsProfileModalOpen(false);
+    }
+  };
+
+  const handleRenameProfile = (oldName: string, newName: string) => {
+    const trimmedNewName = newName.trim();
+    if (!trimmedNewName || trimmedNewName === oldName) return;
+    if (profiles.includes(trimmedNewName)) {
+        alert("A profile with this name already exists.");
+        return;
+    }
+
+    setProfiles(profiles.map(p => p === oldName ? trimmedNewName : p));
+
+    const updateData = (data: Record<string, any[]>) => {
+        const newData = { ...data };
+        if (newData[oldName]) {
+            newData[trimmedNewName] = newData[oldName];
+            delete newData[oldName];
+        }
+        return newData;
+    };
+
+    setAllTransactions(prev => updateData(prev));
+    setAllRecurringExpenses(prev => updateData(prev));
+    setDeletedTransactions(prev => updateData(prev));
+
+    if (activeProfile === oldName) {
+        setActiveProfile(trimmedNewName);
     }
   };
 
@@ -203,17 +239,16 @@ const App: React.FC = () => {
     const newProfiles = profiles.filter(p => p !== profileToDelete);
     setProfiles(newProfiles);
 
-    // Update transactions
-    const newAllTransactions = { ...allTransactions };
-    delete newAllTransactions[profileToDelete];
-    setAllTransactions(newAllTransactions);
+    const deleteProfileData = (data: Record<string, any[]>) => {
+        const newData = { ...data };
+        delete newData[profileToDelete];
+        return newData;
+    };
 
-    // Update recurring expenses
-    const newAllRecurringExpenses = { ...allRecurringExpenses };
-    delete newAllRecurringExpenses[profileToDelete];
-    setAllRecurringExpenses(newAllRecurringExpenses);
+    setAllTransactions(prev => deleteProfileData(prev));
+    setAllRecurringExpenses(prev => deleteProfileData(prev));
+    setDeletedTransactions(prev => deleteProfileData(prev));
     
-    // If the deleted profile was active, switch to another or clear
     if (activeProfile === profileToDelete) {
       setActiveProfile(newProfiles.length > 0 ? newProfiles[0] : null);
     }
@@ -222,12 +257,51 @@ const App: React.FC = () => {
     setProfileToDelete(null);
   };
 
+  const requestDeleteTransaction = (tx: Transaction) => {
+    setTransactionToDelete(tx);
+    setIsDeleteTxConfirmOpen(true);
+  };
+
+  const handleDeleteTransaction = () => {
+    if (!transactionToDelete || !activeProfile) return;
+
+    setDeletedTransactions(prev => ({
+        ...prev,
+        [activeProfile]: [...(prev[activeProfile] || []), transactionToDelete].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    }));
+
+    setAllTransactions(prev => ({
+        ...prev,
+        [activeProfile]: prev[activeProfile].filter(tx => tx.id !== transactionToDelete.id)
+    }));
+
+    setIsDeleteTxConfirmOpen(false);
+    setTransactionToDelete(null);
+  };
+  
+  const handleRestoreTransaction = (txToRestore: Transaction) => {
+    if (!activeProfile) return;
+
+    const restoredTransactions = [...(allTransactions[activeProfile] || []), txToRestore]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    setAllTransactions(prev => ({
+        ...prev,
+        [activeProfile]: restoredTransactions
+    }));
+
+    setDeletedTransactions(prev => ({
+        ...prev,
+        [activeProfile]: (prev[activeProfile] || []).filter(tx => tx.id !== txToRestore.id)
+    }));
+  };
+
   const handleBackup = () => {
       const data = {
           profiles,
           activeProfile,
           allTransactions,
           allRecurringExpenses,
+          deletedTransactions,
       };
       const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 2))}`;
       const link = document.createElement("a");
@@ -252,6 +326,7 @@ const App: React.FC = () => {
                 setActiveProfile(data.activeProfile || (data.profiles.length > 0 ? data.profiles[0] : null));
                 setAllTransactions(data.allTransactions);
                 setAllRecurringExpenses(data.allRecurringExpenses);
+                setDeletedTransactions(data.deletedTransactions || {});
                 alert("Data restored successfully!");
                 setIsSettingsModalOpen(false);
             } else {
@@ -263,7 +338,6 @@ const App: React.FC = () => {
           }
       };
       reader.readAsText(file);
-      // Reset file input value to allow restoring the same file again if needed
       if (event.target) {
         event.target.value = '';
       }
@@ -321,7 +395,7 @@ const App: React.FC = () => {
         />
         <main className="flex-grow flex flex-col px-4 pt-8 pb-4 overflow-hidden">
           <BalanceDisplay amount={totalOwed} profileName={activeProfile || ''} />
-          <HistoryList transactions={currentTransactions} />
+          <HistoryList transactions={currentTransactions} onTransactionClick={requestDeleteTransaction} />
         </main>
         {error && (
             <div 
@@ -348,6 +422,9 @@ const App: React.FC = () => {
           profiles={profiles}
           activeProfile={activeProfile}
           onDeleteProfile={requestDeleteProfile}
+          onRenameProfile={handleRenameProfile}
+          deletedTransactions={currentDeletedTransactions}
+          onRestoreTransaction={handleRestoreTransaction}
         />
         <SummaryModal
             isOpen={isSummaryModalOpen}
@@ -366,6 +443,13 @@ const App: React.FC = () => {
                     This action cannot be undone.
                 </>
             }
+        />
+        <ConfirmationModal
+            isOpen={isDeleteTxConfirmOpen}
+            onClose={() => setIsDeleteTxConfirmOpen(false)}
+            onConfirm={handleDeleteTransaction}
+            title="Delete Transaction"
+            message="Are you sure you want to delete this transaction? This can be undone in Settings."
         />
         {/* Recurring Expenses Update Toast */}
         <div 
