@@ -9,6 +9,7 @@ export interface Transaction {
   date: string;
   currency: Currency;
   originalAmount: number; // The amount in the original currency
+  restored?: boolean;
 }
 
 export interface RecurringExpense {
