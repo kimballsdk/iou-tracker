@@ -1,5 +1,5 @@
 
-export type Currency = 'USD' | 'EUR' | 'JPY';
+export type Currency = 'USD' | 'EUR' | 'GBP';
 
 export interface Transaction {
   id: string;
