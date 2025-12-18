@@ -17,6 +17,7 @@ export interface RecurringExpense {
   text: string;
   amount: number;
   currency: Currency;
+  type?: 'add' | 'subtract';
   recurrenceType: 'days' | 'weeks' | 'months';
   recurrenceValue: number;
   startDate: string; // ISO String
