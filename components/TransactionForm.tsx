@@ -55,7 +55,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
               >
                   <option value="USD" className="bg-gray-900">$ USD</option>
                   <option value="EUR" className="bg-gray-900">€ EUR</option>
-                  <option value="JPY" className="bg-gray-900">¥ JPY</option>
+                  <option value="GBP" className="bg-gray-900">£ GBP</option>
               </select>
           </div>
         </div>
@@ -87,4 +87,3 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, dis
 };
 
 export default TransactionForm;
-
