@@ -1,12 +1,12 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { Transaction, RecurringExpense, Currency } from './types';
 import Header from './components/Header';
 import BalanceDisplay from './components/BalanceDisplay';
 import HistoryList from './components/HistoryList';
 import TransactionForm from './components/TransactionForm';
-import { UserPlusIcon } from './components/icons';
+import { UserPlusIcon, CheckCircleIcon } from './components/icons';
 import ProfileModal from './components/ProfileModal';
 import SettingsModal from './components/SettingsModal';
 import SummaryModal from './components/SummaryModal';
@@ -31,6 +31,9 @@ const App: React.FC = () => {
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
+  const [showUpdateToast, setShowUpdateToast] = useState(false);
+  const restoreInputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     // New logic for flexible recurring expenses
@@ -95,9 +98,18 @@ const App: React.FC = () => {
 
         setAllTransactions(updatedTransactions);
         setAllRecurringExpenses(updatedRecurringExpenses);
-        alert("Recurring expenses have been checked and updated.");
+        setShowUpdateToast(true);
     }
   }, []); // Run only once on mount
+
+  useEffect(() => {
+    if (showUpdateToast) {
+        const timer = setTimeout(() => {
+            setShowUpdateToast(false);
+        }, 4000);
+        return () => clearTimeout(timer);
+    }
+  }, [showUpdateToast]);
 
 
   useEffect(() => {
@@ -251,6 +263,14 @@ const App: React.FC = () => {
           }
       };
       reader.readAsText(file);
+      // Reset file input value to allow restoring the same file again if needed
+      if (event.target) {
+        event.target.value = '';
+      }
+  };
+  
+  const triggerRestore = () => {
+    restoreInputRef.current?.click();
   };
   
   const clearError = () => { setError(null); };
@@ -268,6 +288,14 @@ const App: React.FC = () => {
                 <UserPlusIcon className="w-6 h-6 mr-2" />
                 Add First Profile
             </button>
+            <div className="mt-4 text-sm">
+                <button
+                    onClick={triggerRestore}
+                    className="text-gray-400 hover:text-white underline transition-colors"
+                >
+                    Or Restore from Backup
+                </button>
+            </div>
         </div>
         <ProfileModal 
           isOpen={isProfileModalOpen}
@@ -275,6 +303,7 @@ const App: React.FC = () => {
           onSave={handleSaveProfile}
           isFirstProfile={true}
         />
+        <input type="file" accept=".json" ref={restoreInputRef} onChange={handleRestore} className="hidden" />
        </>
     )
   }
@@ -315,7 +344,7 @@ const App: React.FC = () => {
           recurringExpenses={currentRecurringExpenses}
           onSaveRecurring={handleSaveRecurringExpenses}
           onBackup={handleBackup}
-          onRestore={handleRestore}
+          onTriggerRestore={triggerRestore}
           profiles={profiles}
           activeProfile={activeProfile}
           onDeleteProfile={requestDeleteProfile}
@@ -338,6 +367,17 @@ const App: React.FC = () => {
                 </>
             }
         />
+        {/* Recurring Expenses Update Toast */}
+        <div 
+          aria-live="assertive"
+          className={`fixed inset-x-0 bottom-0 flex items-center justify-center p-4 transition-transform duration-300 ease-in-out ${showUpdateToast ? 'translate-y-0' : 'translate-y-full'}`}
+        >
+            <div className="flex items-center space-x-3 bg-blue-900/80 backdrop-blur-sm border border-blue-700 text-blue-200 text-sm font-medium px-4 py-3 rounded-full shadow-lg">
+                <CheckCircleIcon className="w-5 h-5"/>
+                <span>Recurring expenses have been checked and updated.</span>
+            </div>
+        </div>
+      <input type="file" accept=".json" ref={restoreInputRef} onChange={handleRestore} className="hidden" />
     </div>
   );
 };
