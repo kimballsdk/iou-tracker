@@ -15,7 +15,7 @@ interface SettingsModalProps {
   onDeleteProfile: (profileName: string) => void;
   onRenameProfile: (oldName: string, newName: string) => void;
   deletedTransactions: Transaction[];
-  onRestoreTransaction: (transaction: Transaction) => void;
+  onRequestRestoreTransaction: (transaction: Transaction) => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ 
@@ -30,7 +30,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     onDeleteProfile,
     onRenameProfile,
     deletedTransactions,
-    onRestoreTransaction
+    onRequestRestoreTransaction
 }) => {
   const [localExpenses, setLocalExpenses] = useState<RecurringExpense[]>([]);
   
@@ -211,7 +211,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 <p>{tx.text} - {formatCurrency(tx.originalAmount, tx.currency)}</p>
                                 <p className="text-xs text-gray-400">Deleted on {formatDate(tx.date)}</p>
                             </div>
-                            <button onClick={() => onRestoreTransaction(tx)} className="text-blue-400 hover:text-blue-300" title="Restore Transaction"><ArrowUturnLeftIcon className="w-5 h-5"/></button>
+                            <button onClick={() => onRequestRestoreTransaction(tx)} className="text-blue-400 hover:text-blue-300" title="Restore Transaction"><ArrowUturnLeftIcon className="w-5 h-5"/></button>
                         </div>
                     ))}
                     {deletedTransactions.length === 0 && <p className="text-sm text-gray-500">No deleted transactions.</p>}
