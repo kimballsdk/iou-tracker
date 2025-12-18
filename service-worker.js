@@ -1,21 +1,21 @@
 
-const CACHE_NAME = 'iou-tracker-cache-v4';
+const CACHE_NAME = 'iou-tracker-cache-v5';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/index.tsx',
-  '/App.tsx',
-  '/types.ts',
-  '/hooks/useLocalStorage.ts',
-  '/components/Header.tsx',
-  '/components/BalanceDisplay.tsx',
-  '/components/HistoryList.tsx',
-  '/components/TransactionForm.tsx',
-  '/components/icons.tsx',
-  '/components/ProfileModal.tsx',
-  '/components/SettingsModal.tsx',
-  '/components/SummaryModal.tsx',
-  '/components/ConfirmationModal.tsx',
+  '/iou-tracker/',
+  '/iou-tracker/index.html',
+  '/iou-tracker/index.tsx',
+  '/iou-tracker/App.tsx',
+  '/iou-tracker/types.ts',
+  '/iou-tracker/hooks/useLocalStorage.ts',
+  '/iou-tracker/components/Header.tsx',
+  '/iou-tracker/components/BalanceDisplay.tsx',
+  '/iou-tracker/components/HistoryList.tsx',
+  '/iou-tracker/components/TransactionForm.tsx',
+  '/iou-tracker/components/icons.tsx',
+  '/iou-tracker/components/ProfileModal.tsx',
+  '/iou-tracker/components/SettingsModal.tsx',
+  '/iou-tracker/components/SummaryModal.tsx',
+  '/iou-tracker/components/ConfirmationModal.tsx',
   'https://cdn.tailwindcss.com'
 ];
 
@@ -24,7 +24,9 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Use a new array for addAll to avoid modifying the original
+        const urlsToInstall = urlsToCache.map(url => new Request(url, { cache: 'reload' }));
+        return cache.addAll(urlsToInstall);
       })
   );
 });
