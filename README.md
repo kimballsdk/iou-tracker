@@ -27,6 +27,31 @@ This is a Progressive Web App (PWA), which means you can "install" it to your ph
     -   Click the **cog icon** to open settings.
     -   Here you can manage recurring expenses, delete profiles, and backup or restore your data.
 
+## 👀 Preivew
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/ea6554f5-faaa-4d16-a65a-43d98a04aea5" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/aaa563da-50d5-4fc2-8c1f-0f81c53f7db4" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/79d7c6a4-ccc2-43f7-8a48-cae31fac2d2a" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/42e301d9-2142-4b5a-b71b-9f8f4fef7586" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/6e099160-54e4-4016-ad1a-9700f3324d85" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/8b3733f9-2a11-458e-93bd-e0573b1faee5" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/d85b3d79-d780-4eae-9d71-b477cd998e2e" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/aa98c2da-10ff-4faf-8806-8a35e599e9de" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/91764db5-80b7-4a63-a562-61d0e32e81ae" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/a3630de7-24f7-41e6-bb23-2d569637409f" />
+<img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/2da4084d-c674-469c-ae71-16208fd0f0e2" />
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 🔧 Built With
 
 -   React
