@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IOU Tracker</title>
 
@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="IOU Tracker" />
     <meta name="theme-color" content="#000000" />
-    <!-- You would need to create an apple-touch-icon.png file for a custom home screen icon -->
+    <meta name="mobile-web-app-capable" content="yes" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 
@@ -35,17 +35,6 @@
         background: transparent;
       }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "vite": "https://esm.sh/vite@^7.3.0"
-  }
-}
-</script>
 </head>
   <body class="bg-black">
     <div id="root"></div>
@@ -53,7 +42,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/iou-tracker/service-worker.js')
+          navigator.serviceWorker.register('/iou-tracker/service-worker.js', { scope: '/iou-tracker/' })
             .then(registration => {
               console.log('ServiceWorker registration successful with scope: ', registration.scope);
             })

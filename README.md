@@ -5,6 +5,10 @@ A simple, clean, and private money tracker to keep a log of how much you owe som
 
 This is a Progressive Web App (PWA), which means you can "install" it to your phone's home screen for easy access, and it will work offline.
 
+**👉 Live app: https://kimballsdk.github.io/iou-tracker/**
+
+To install on Android, open the link in Chrome, tap the ⋮ menu, and choose **Add to Home screen** → **Install**. On iPhone, open it in Safari, tap Share, and choose **Add to Home Screen**.
+
 ## ✨ Features
 
 - **👤 Multi-Profile Management**: Track debts for multiple people separately.
@@ -27,7 +31,7 @@ This is a Progressive Web App (PWA), which means you can "install" it to your ph
     -   Click the **cog icon** to open settings.
     -   Here you can manage recurring expenses, delete profiles, and backup or restore your data.
 
-## 👀 Preivew
+## 👀 Preview
 <img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/ea6554f5-faaa-4d16-a65a-43d98a04aea5" />
 <img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/aaa563da-50d5-4fc2-8c1f-0f81c53f7db4" />
 <img width="203" height="884" alt="image" src="https://github.com/user-attachments/assets/79d7c6a4-ccc2-43f7-8a48-cae31fac2d2a" />
